@@ -133,5 +133,41 @@
     background-color: #c0392b;
 }
 
+.botones-pedidos {
+    display: flex;
+    justify-content: center; /* centra horizontalmente */
+    gap: 15px;               /* separación entre botones */
+    margin-top: 20px;
+}
+
+.btn-primario {
+    background: #4c4cff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-primario:hover {
+    background: #3838e0;
+}
+
+.btn-secundario {
+    background: #f0f0f0;
+    border: 1px solid #999;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-secundario:hover {
+    background: #e0e0e0;
+}
+
 
 

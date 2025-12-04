@@ -27,9 +27,11 @@
 
         <div id="contenedorPedidos"></div>
 
-        <button class="btn-pedidos" onclick="limpiarPedidos()">Limpiar pedidos
-        </button>
-        <button id="actualizarPedidosBtn" class="btn-refresh">Actualizar pedidos</button>
+        <div class="botones-pedidos">
+            <button class="btn-secundario" onclick="limpiarPedidos()">Limpiar pedidos</button>
+            <button class="btn-primario" id="actualizarPedidosBtn" onclick="cargarPedidos()">Actualizar pedidos</button>
+        </div>
+
 
     </main>
 

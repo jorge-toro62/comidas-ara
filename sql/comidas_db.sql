@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-12-2025 a las 22:09:40
+-- Tiempo de generación: 04-12-2025 a las 22:38:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -40,8 +40,8 @@ CREATE TABLE `cuentas` (
 --
 
 INSERT INTO `cuentas` (`id_cuenta`, `id_mesa`, `total`, `estado`, `fecha`) VALUES
-(1, 1, 26000.00, 'abierta', '2025-12-04 10:58:55'),
-(2, 2, 45000.00, 'abierta', '2025-12-04 13:50:29'),
+(1, 1, 0.00, 'abierta', '2025-12-04 10:58:55'),
+(2, 2, 45500.00, 'abierta', '2025-12-04 13:50:29'),
 (3, 3, 0.00, 'abierta', '2025-12-04 14:17:58');
 
 -- --------------------------------------------------------
@@ -63,10 +63,8 @@ CREATE TABLE `cuenta_detalle` (
 --
 
 INSERT INTO `cuenta_detalle` (`id_detalle`, `id_cuenta`, `id_producto`, `cantidad`, `subtotal`) VALUES
-(2, 2, 8, 3, 45000.00),
-(9, 1, 19, 6, 9000.00),
-(10, 1, 8, 1, 15000.00),
-(11, 1, 4, 1, 2000.00);
+(14, 2, 8, 3, 45000.00),
+(15, 2, 1, 1, 500.00);
 
 -- --------------------------------------------------------
 
@@ -116,13 +114,15 @@ CREATE TABLE `pedidos` (
 --
 
 INSERT INTO `pedidos` (`id_pedido`, `id_mesa`, `fecha`, `total`, `estado`, `updated_at`) VALUES
-(7, 1, '2025-12-04 14:17:50', 1500.00, 'listo', '2025-12-04 21:01:07'),
+(7, 1, '2025-12-04 14:17:50', 3000.00, 'listo', '2025-12-04 21:20:13'),
 (8, 3, '2025-12-04 14:18:19', 17000.00, 'listo', '2025-12-04 21:01:07'),
-(9, 2, '2025-12-04 14:19:56', 45000.00, 'listo', '2025-12-04 21:01:07'),
-(10, 2, '2025-12-04 15:15:27', 45000.00, 'listo', '2025-12-04 21:01:07'),
+(9, 2, '2025-12-04 14:19:56', 45500.00, 'listo', '2025-12-04 21:22:39'),
+(10, 2, '2025-12-04 15:15:27', 45500.00, 'listo', '2025-12-04 21:22:39'),
 (11, 1, '2025-12-04 15:21:10', 16500.00, 'listo', '2025-12-04 21:01:07'),
 (12, 1, '2025-12-04 15:57:03', 24000.00, 'listo', '2025-12-04 21:01:07'),
-(13, 1, '2025-12-04 16:05:52', 26000.00, 'listo', '2025-12-04 21:06:57');
+(13, 1, '2025-12-04 16:05:52', 26000.00, 'listo', '2025-12-04 21:06:57'),
+(14, 1, '2025-12-04 16:19:02', 1500.00, 'listo', '2025-12-04 21:22:10'),
+(15, 1, '2025-12-04 16:19:41', 3000.00, 'listo', '2025-12-04 21:22:07');
 
 -- --------------------------------------------------------
 
@@ -143,19 +143,23 @@ CREATE TABLE `pedidos_detalle` (
 --
 
 INSERT INTO `pedidos_detalle` (`id_detalle`, `id_pedido`, `id_producto`, `cantidad`, `subtotal`) VALUES
-(4, 7, 19, 1, 1500.00),
 (5, 8, 8, 1, 15000.00),
 (6, 8, 19, 1, 1500.00),
 (7, 8, 1, 1, 500.00),
-(8, 9, 8, 3, 45000.00),
-(9, 10, 8, 3, 45000.00),
 (10, 11, 19, 1, 1500.00),
 (11, 11, 8, 1, 15000.00),
 (12, 12, 19, 6, 9000.00),
 (13, 12, 8, 1, 15000.00),
 (19, 13, 19, 6, 9000.00),
 (20, 13, 8, 1, 15000.00),
-(21, 13, 4, 1, 2000.00);
+(21, 13, 4, 1, 2000.00),
+(23, 14, 19, 1, 1500.00),
+(26, 15, 19, 2, 3000.00),
+(27, 7, 19, 2, 3000.00),
+(28, 10, 8, 3, 45000.00),
+(29, 10, 1, 1, 500.00),
+(30, 9, 8, 3, 45000.00),
+(31, 9, 1, 1, 500.00);
 
 -- --------------------------------------------------------
 
@@ -186,7 +190,9 @@ INSERT INTO `pedidos_historial` (`id_historial`, `id_pedido`, `id_mesa`, `fecha_
 (6, 10, 2, '2025-12-04 15:15:27', '2025-12-04 15:16:03', 45000.00, '[{\"nombre\":\"Patacon plus\",\"cantidad\":3,\"subtotal\":\"45000.00\"}]'),
 (7, 11, 1, '2025-12-04 15:21:10', '2025-12-04 15:21:39', 16500.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":1,\"subtotal\":\"1500.00\"},{\"nombre\":\"Patacon plus\",\"cantidad\":1,\"subtotal\":\"15000.00\"}]'),
 (8, 12, 1, '2025-12-04 15:57:03', '2025-12-04 15:58:01', 24000.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":6,\"subtotal\":\"9000.00\"},{\"nombre\":\"Patacon plus\",\"cantidad\":1,\"subtotal\":\"15000.00\"}]'),
-(9, 13, 1, '2025-12-04 16:05:52', '2025-12-04 16:06:57', 26000.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":6,\"subtotal\":\"9000.00\"},{\"nombre\":\"Patacon plus\",\"cantidad\":1,\"subtotal\":\"15000.00\"},{\"nombre\":\"Aborrajado\",\"cantidad\":1,\"subtotal\":\"2000.00\"}]');
+(9, 13, 1, '2025-12-04 16:05:52', '2025-12-04 16:06:57', 26000.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":6,\"subtotal\":\"9000.00\"},{\"nombre\":\"Patacon plus\",\"cantidad\":1,\"subtotal\":\"15000.00\"},{\"nombre\":\"Aborrajado\",\"cantidad\":1,\"subtotal\":\"2000.00\"}]'),
+(10, 15, 1, '2025-12-04 16:19:41', '2025-12-04 16:22:07', 3000.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":2,\"subtotal\":\"3000.00\"}]'),
+(11, 14, 1, '2025-12-04 16:19:02', '2025-12-04 16:22:10', 1500.00, '[{\"nombre\":\"Cafe negro\",\"cantidad\":1,\"subtotal\":\"1500.00\"}]');
 
 -- --------------------------------------------------------
 
@@ -326,7 +332,7 @@ ALTER TABLE `cuentas`
 -- AUTO_INCREMENT de la tabla `cuenta_detalle`
 --
 ALTER TABLE `cuenta_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `mesas`
@@ -338,19 +344,19 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos_detalle`
 --
 ALTER TABLE `pedidos_detalle`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos_historial`
 --
 ALTER TABLE `pedidos_historial`
-  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`

@@ -402,43 +402,41 @@ console.log("Script cargado correctamente");
 
 function exportarExcel() {
 
-    fetch("backend/obtener_cuentas.php")
+    fetch("backend/obtener_historial.php")
         .then(r => r.json())
         .then(data => {
 
             if (!data || data.length === 0) {
-                alert("No hay cuentas para exportar");
+                alert("No hay historial para exportar");
                 return;
             }
 
-            // Crear arreglo final para exportación
             const filas = data.map(c => {
 
-                // Unir productos en una sola cadena
-                const productosTexto = c.detalle.length > 0
+                const productos = c.detalle.length > 0
                     ? c.detalle.map(p => `${p.nombre} x${p.cantidad}`).join(", ")
                     : "Sin productos";
 
                 return {
                     Mesa: c.id_mesa,
-                    Productos: productosTexto,
                     Fecha: c.fecha,
+                    Estado: c.estado,
+                    Productos: productos,
                     Total: c.total
                 };
             });
 
-            // Crear hoja y workbook
             const ws = XLSX.utils.json_to_sheet(filas);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Cuentas");
+            XLSX.utils.book_append_sheet(wb, ws, "Historial");
 
-            // Exportar archivo
-            XLSX.writeFile(wb, "cuentas_resumen.xlsx");
+            XLSX.writeFile(wb, "historial_cuentas.xlsx");
 
-            alert("¡Archivo Excel generado correctamente!");
+            alert("¡Historial completo exportado correctamente!");
         })
         .catch(err => console.error("Error al generar Excel:", err));
 }
+
 
 // Seleccionar el botón "Limpiar Mesa" basado en su texto
 const limpiarMesaBtn = Array.from(document.querySelectorAll(".btn-eliminar"))

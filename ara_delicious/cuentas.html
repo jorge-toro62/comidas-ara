@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuentas</title>
+
+    <script>
+        if (localStorage.getItem("rol") !== "admin") {
+            window.location.href = "pedidos_cocinero.html";
+        }
+    </script>
+
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cuentas.css"> <!-- NUEVO -->
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <h2 class="logo">Mi Restaurante</h2>
+        <ul class="nav-links">
+            <li><a href="mesas.html">Mesas</a></li>
+            <li><a href="cuentas.html" class="active">Cuentas</a></li>
+            <li><a href="pedidos.html">Pedidos</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#" onclick="logout()">Cerrar sesión</a></li>
+
+        </ul>
+    </nav>
+
+    <main class="container">
+        <h3 class="title">Cuentas Registradas</h3>
+        <button class="btn-exportar" onclick="exportarExcel()">
+            Exportar a Excel
+        </button>
+
+
+        <div id="contenedorCuentas" class="tabla-cuentas-container"></div>
+
+
+    </main>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- 👇 ESTA LÍNEA FALTABA -->
+    <script> cargarCuentas(); </script>
+
+</body>
+
+</html>

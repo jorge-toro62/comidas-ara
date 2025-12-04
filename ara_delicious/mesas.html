@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mesas - Administración Restaurante</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <script>
+        if (localStorage.getItem("rol") !== "admin") {
+            window.location.href = "pedidos_cocinero.html";
+        }
+    </script>
+
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <h2 class="logo">Mi Restaurante</h2>
+        <ul class="nav-links">
+            <li><a href="mesas.html" class="active">Mesas</a></li>
+            <li><a href="cuentas.html">Cuentas</a></li>
+            <li><a href="pedidos.html">Pedidos</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#" onclick="logout()">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container">
+        <h3 class="title">Selecciona una Mesa</h3>
+
+        <div class="mesas-grid">
+            <div class="mesa" data-mesa="1"><img src="assets/img/mesa.png">
+                <p>Mesa 1</p>
+            </div>
+            <div class="mesa" data-mesa="2"><img src="assets/img/mesa.png">
+                <p>Mesa 2</p>
+            </div>
+            <div class="mesa" data-mesa="3"><img src="assets/img/mesa.png">
+                <p>Mesa 3</p>
+            </div>
+            <div class="mesa" data-mesa="4"><img src="assets/img/mesa.png">
+                <p>Mesa 4</p>
+            </div>
+            <div class="mesa" data-mesa="5"><img src="assets/img/mesa.png">
+                <p>Mesa 5</p>
+            </div>
+            <div class="mesa" data-mesa="6"><img src="assets/img/mesa.png">
+                <p>Mesa 6</p>
+            </div>
+            <div class="mesa" data-mesa="7"><img src="assets/img/mesa.png">
+                <p>Mesa 7</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL -->
+    <!-- MODAL -->
+    <!-- MODAL -->
+    <div id="mesaModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal">&times;</span>
+            <h3 id="mesaTitulo">Mesa X</h3>
+
+            <div class="modal-form">
+
+                <label>Producto:</label>
+                <div class="input-group">
+                    <input type="text" id="productoInput" autocomplete="off" placeholder="Escriba para buscar..." />
+
+                    <!-- ✔ Sugerencias (solo una vez) -->
+                    <div id="sugerencias" class="sugerencias"></div>
+                </div>
+
+                <label>Precio:</label>
+                <input type="text" id="precioInput" readonly>
+
+                <label>Cantidad:</label>
+                <input type="number" id="cantidadInput" min="1" value="1">
+
+                <button id="agregarBtn">Agregar</button>
+            </div>
+
+            <hr>
+
+            <h4>Productos agregados:</h4>
+
+            <div class="tabla-container">
+                <table id="tablaProductos">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cant.</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <h3 id="totalLabel">Total: $0</h3>
+
+            <div class="modal-footer">
+                <button class="footer-btn btn-editar" id="guardarCambiosBtn">Guardar Cambios</button>
+
+                <!-- ✔ Agregado ID correcto -->
+                <button class="footer-btn btn-eliminar" id="limpiarMesaBtn">Limpiar Mesa</button>
+
+                <!-- ✔ Corregido error de sintaxis -->
+                <button id="generarPedidoBtn" class="footer-btn btn-pedidos">Generar pedido</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/script.js?v=<?=time()?>"></script>
+
+</body>
+
+</html>

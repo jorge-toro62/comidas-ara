@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Cocinero</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pedidos.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR SOLO PARA COCINERO -->
+    <nav class="navbar">
+        <h2 class="logo">Mi Restaurante</h2>
+        <ul class="nav-links">
+            <li><a href="pedido_cocinero.html" class="active">Pedidos</a></li>
+            <li><a href="#" onclick="logout()">Salir</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <main class="container">
+        <h2 class="title">Gestión de Pedidos</h2>
+
+        <div id="contenedorPedidos"></div>
+
+        <button class="btn-pedidos" onclick="limpiarPedidos()">Limpiar pedidos
+        </button>
+        <button id="actualizarPedidosBtn" class="btn-refresh">Actualizar pedidos</button>
+
+    </main>
+
+    <script src="js/script.js"></script>
+
+    <script>
+        // Bloquea acceso si no es cocinero
+        const rol = localStorage.getItem("rol");
+        if (rol !== "cocinero") {
+            window.location.href = "index.html";
+        }
+
+        // Cargar pedidos al abrir
+        cargarPedidos();
+
+        function logout() {
+            localStorage.removeItem("rol");
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

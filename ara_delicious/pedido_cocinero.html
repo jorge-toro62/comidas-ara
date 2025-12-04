@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +49,32 @@
             localStorage.removeItem("rol");
             window.location.href = "index.html";
         }
+
+        let lastUpdate = null;
+
+        function checkForUpdates() {
+            fetch("backend/check_updates.php")
+                .then(r => r.json())
+                .then(data => {
+
+                    if (!lastUpdate) {
+                        lastUpdate = data.last_update;
+                        return;
+                    }
+
+                    if (data.last_update !== lastUpdate) {
+                        console.log("🔄 Cambios detectados, actualizando pedidos...");
+                        lastUpdate = data.last_update;
+                        cargarPedidos(); // actualiza la tabla inmediatamente
+                    }
+                })
+                .catch(err => console.error("Error checking updates:", err));
+        }
+
+        setInterval(checkForUpdates, 3000); // cada 3 segundos
+
     </script>
 
 </body>
+
 </html>

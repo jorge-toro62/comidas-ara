@@ -65,5 +65,53 @@ $upd = $mysqli->prepare("
 $upd->bind_param("ii", $idCuenta, $idCuenta);
 $upd->execute();
 
+// 5. Si existe un pedido activo para esta mesa, actualizarlo también
+
+$pedido = $mysqli->prepare("SELECT id_pedido FROM pedidos WHERE id_mesa = ? ORDER BY id_pedido DESC LIMIT 1");
+$pedido->bind_param("i", $mesa);
+$pedido->execute();
+$rPedido = $pedido->get_result();
+
+if ($rPedido->num_rows > 0) {
+
+    $rowP = $rPedido->fetch_assoc();
+    $idPedido = $rowP["id_pedido"];
+
+    // Eliminar detalle previo del pedido
+    $delP = $mysqli->prepare("DELETE FROM pedidos_detalle WHERE id_pedido = ?");
+    $delP->bind_param("i", $idPedido);
+    $delP->execute();
+
+    // Insertar nuevo detalle del pedido según la actualización
+    $insP = $mysqli->prepare("
+        INSERT INTO pedidos_detalle (id_pedido, id_producto, cantidad, subtotal)
+        VALUES (?,?,?,?)
+    ");
+
+    foreach ($items as $item) {
+
+        $idProd = intval($item["id_producto"]);
+        $cant = intval($item["cantidad"]);
+        $precio = floatval($item["precio"]);
+        $subtotal = $precio * $cant;
+
+        $insP->bind_param("iiid", $idPedido, $idProd, $cant, $subtotal);
+        $insP->execute();
+    }
+
+    // Actualizar total del pedido
+    $updP = $mysqli->prepare("
+        UPDATE pedidos
+        SET total = (SELECT SUM(subtotal) FROM pedidos_detalle WHERE id_pedido = ?)
+        WHERE id_pedido = ?
+    ");
+    $updP->bind_param("ii", $idPedido, $idPedido);
+    $updP->execute();
+    $updP2 = $mysqli->prepare("UPDATE pedidos SET updated_at = NOW() WHERE id_pedido = ?");
+    $updP2->bind_param("i", $idPedido);
+    $updP2->execute();
+
+}
+
 // 5. Respuesta final
 echo json_encode(["ok" => true]);

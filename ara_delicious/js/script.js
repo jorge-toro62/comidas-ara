@@ -50,6 +50,17 @@ function abrirMesa(numMesa) {
         .then(r => r.json())
         .then(data => {
 
+            console.log("Respuesta obtener_cuenta_mesa.php:", data);
+
+            // Si el backend no devuelve un array válido, la mesa se abre vacía
+            if (!data || !Array.isArray(data.detalle)) {
+                console.warn("⚠️ 'detalle' no existe o no es array, se carga mesa vacía");
+                listaMesa = [];
+                actualizarTabla();
+                actualizarTotal();
+                return;
+            }
+
             listaMesa = data.detalle.map(p => ({
                 id_producto: p.id_producto,
                 nombre: p.nombre,
@@ -62,6 +73,8 @@ function abrirMesa(numMesa) {
             actualizarTotal();
         })
         .catch(err => console.error("Error al obtener cuenta:", err));
+
+
 }
 
 
@@ -249,8 +262,23 @@ guardarCambiosBtn?.addEventListener("click", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
-        .then(r => r.json())
-        .then(res => {
+        .then(r => r.text())   // <-- leer texto bruto
+        .then(texto => {
+
+            console.log("🔥 Respuesta cruda guardar_detalle_mesa.php:");
+            console.log(texto);
+
+            let res;
+
+            try {
+                res = JSON.parse(texto);
+            } catch (e) {
+                console.error("❌ ERROR: El servidor NO devolvió JSON válido");
+                console.error("Contenido recibido:", texto);
+                alert("Error en el servidor (revisa la consola)");
+                return;
+            }
+
             if (res.ok) {
                 alert("Cambios guardados correctamente");
                 window.location.href = "cuentas.html";
@@ -259,6 +287,7 @@ guardarCambiosBtn?.addEventListener("click", () => {
             }
         })
         .catch(err => console.error("Error:", err));
+
 });
 
 

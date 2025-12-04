@@ -5,26 +5,45 @@ header("Content-Type: application/json");
 
 $mesa = intval($_GET["mesa"]);
 
-// 1. Verificar que la mesa existe
-$checkMesa = $mysqli->prepare("SELECT id_mesa FROM mesas WHERE id_mesa = ?");
-$checkMesa->bind_param("i", $mesa);
+// -----------------------------------------------------
+// 1. SI LA TABLA MESAS NO EXISTE O NO TIENE REGISTROS
+//    → permitir abrir la mesa sin error
+// -----------------------------------------------------
+$checkMesa = $mysqli->prepare("SHOW TABLES LIKE 'mesas'");
 $checkMesa->execute();
-$resMesa = $checkMesa->get_result();
+$tableExists = $checkMesa->get_result()->num_rows > 0;
 
-if ($resMesa->num_rows == 0) {
-    echo json_encode(["error" => "Mesa no existe"]);
-    exit;
+if ($tableExists) {
+
+    // Verificar si la mesa existe
+    $checkMesa2 = $mysqli->prepare("SELECT id_mesa FROM mesas WHERE id_mesa = ?");
+    $checkMesa2->bind_param("i", $mesa);
+    $checkMesa2->execute();
+    $resMesa = $checkMesa2->get_result();
+
+    if ($resMesa->num_rows == 0) {
+        // ⚠️ En vez de error → permitir abrir la mesa vacía
+        echo json_encode([
+            "id_mesa" => $mesa,
+            "id_cuenta" => null,
+            "total" => 0,
+            "detalle" => []
+        ]);
+        exit;
+    }
 }
 
-// 2. Verificar si ya existe una cuenta para esa mesa
-$qCuenta = $mysqli->prepare("SELECT id_cuenta, total FROM cuentas WHERE id_mesa = ?");
+// -----------------------------------------------------
+// 2. Obtener o crear la cuenta
+// -----------------------------------------------------
+$qCuenta = $mysqli->prepare("SELECT id_cuenta FROM cuentas WHERE id_mesa = ?");
 $qCuenta->bind_param("i", $mesa);
 $qCuenta->execute();
 $resCuenta = $qCuenta->get_result();
 
 if ($resCuenta->num_rows == 0) {
 
-    // Crear la cuenta si no existe
+    // Crear nueva cuenta
     $crear = $mysqli->prepare("INSERT INTO cuentas (id_mesa, total, estado, fecha) VALUES (?, 0, 'abierta', NOW())");
     $crear->bind_param("i", $mesa);
     $crear->execute();
@@ -36,7 +55,9 @@ if ($resCuenta->num_rows == 0) {
     $idCuenta = $row["id_cuenta"];
 }
 
-// 3. Obtener los productos desde cuenta_detalle (TU NOMBRE REAL)
+// -----------------------------------------------------
+// 3. Obtener detalle
+// -----------------------------------------------------
 $qDetalle = $mysqli->prepare("
     SELECT 
         d.id_producto,
@@ -52,13 +73,17 @@ $qDetalle->bind_param("i", $idCuenta);
 $qDetalle->execute();
 $detalle = $qDetalle->get_result()->fetch_all(MYSQLI_ASSOC);
 
-// 4. Calcular total real
+// Total real
 $total = array_sum(array_column($detalle, "subtotal"));
 
-// 5. Respuesta en JSON
+// -----------------------------------------------------
+// 4. Respuesta final
+// -----------------------------------------------------
 echo json_encode([
     "id_mesa" => $mesa,
     "id_cuenta" => $idCuenta,
     "total" => $total,
     "detalle" => $detalle
 ]);
+
+?>

@@ -509,11 +509,12 @@ function cargarPedidos() {
                                     <th>Productos</th>
                                     <th>Cantidad</th>
                                     <th>Total</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="4" style="text-align:center; padding:20px;">
+                                    <td colspan="5" style="text-align:center; padding:20px;">
                                         No hay pedidos registrados.
                                     </td>
                                 </tr>
@@ -534,29 +535,35 @@ function cargarPedidos() {
                                 <th>Productos</th>
                                 <th>Cantidad</th>
                                 <th>Total</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${data.map(p => {
 
-                // Nombre(s)
                 const nombres = p.detalle.length > 0
                     ? p.detalle.map(d => d.nombre).join("<br>")
                     : "Sin productos";
 
-                // Cantidades
                 const cantidades = p.detalle.length > 0
                     ? p.detalle.map(d => d.cantidad).join("<br>")
                     : "-";
 
                 return `
-                                    <tr>
-                                        <td>${p.id_mesa}</td>
-                                        <td>${nombres}</td>
-                                        <td>${cantidades}</td>
-                                        <td>$${p.total}</td>
-                                    </tr>
-                                `;
+                    <tr id="pedido-${p.id_pedido}">
+                        <td>${p.id_mesa}</td>
+                        <td>${nombres}</td>
+                        <td>${cantidades}</td>
+                        <td>$${p.total}</td>
+                        <td>
+                            <button class="btn-listo" onclick="pedidoListo(${p.id_pedido})">
+                                Listo
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+
             }).join("")}
                         </tbody>
                     </table>
@@ -623,6 +630,57 @@ const actualizarBtn = document.getElementById("actualizarPedidosBtn");
 if (window.location.pathname.includes("pedido_cocinero.html")) {
     setInterval(() => cargarPedidos(), 15000); // cada 15 segundos
 }
+
+function pedidoListo(idPedido) {
+
+    if (!confirm("¿Marcar este pedido como listo?")) return;
+
+    fetch("backend/pedido_listo.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_pedido: idPedido })
+    })
+        .then(r => r.json())
+        .then(res => {
+            if (res.ok) {
+
+                // 🟩 Eliminar la fila de la tabla directamente
+                const fila = document.getElementById(`pedido-${idPedido}`);
+                if (fila) fila.remove();
+
+                alert("Pedido marcado como listo");
+
+                // 🟥 Si ya no hay filas, mostrar mensaje vacío
+                const filasRestantes = document.querySelectorAll("#contenedorPedidos tbody tr");
+                if (filasRestantes.length === 0) {
+                    document.getElementById("contenedorPedidos").innerHTML = `
+                    <div class="tabla-pedidos-container">
+                        <table class="tabla-pedidos">
+                            <thead>
+                                <tr>
+                                    <th>Mesa</th>
+                                    <th>Productos</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center; padding:20px;">No hay pedidos registrados</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                }
+
+            } else {
+                alert("Error: " + res.error);
+            }
+        })
+        .catch(err => console.error("Error pedido listo:", err));
+}
+
+
 
 
 

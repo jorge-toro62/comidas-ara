@@ -15,8 +15,10 @@ if ($check->num_rows == 0) {
     exit;
 }
 
+// SOLO PEDIDOS PENDIENTES
 $sql = "SELECT id_pedido, id_mesa, fecha, total 
         FROM pedidos
+        WHERE estado = 'pendiente'
         ORDER BY id_pedido DESC";
 
 $res = $mysqli->query($sql);
@@ -34,7 +36,7 @@ while ($row = $res->fetch_assoc()) {
         continue;
     }
 
-    // CONSULTA CORRECTA
+    // ❗ CONSULTA DETALLE
     $sqlDet = "
         SELECT 
             p.nombre,

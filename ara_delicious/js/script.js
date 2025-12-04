@@ -434,6 +434,8 @@ if (limpiarMesaBtn) {
     });
 }
 
+/*Botono para generar el pedido en cocina */
+
 const generarPedidoBtn = document.getElementById("generarPedidoBtn");
 
 if (generarPedidoBtn) {
@@ -444,47 +446,8 @@ if (generarPedidoBtn) {
             return;
         }
 
-        if (!confirm("¿Deseas generar un pedido con estos productos?")) return;
-
-        const payload = {
-            mesa: mesaActual,
-            items: listaMesa.map(p => ({
-                id_producto: p.id_producto,
-                cantidad: p.cantidad,
-                precio: p.precio
-            }))
-        };
-
-        fetch("backend/generar_pedido.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-            .then(response => response.text())  // <-- LEER TEXTO
-            .then(texto => {
-
-                console.log("Respuesta cruda del servidor:", texto);
-
-                let res;
-                try {
-                    res = JSON.parse(texto); // intentar convertir a JSON
-                } catch (err) {
-                    console.error("❌ ERROR: el servidor no devolvió JSON válido");
-                    console.error("Respuesta real del servidor ↓↓↓");
-                    console.error(texto);
-                    alert("Error en el servidor (revisa consola)");
-                    return;
-                }
-
-                if (res.ok) {
-                    alert("Pedido registrado correctamente");
-                    window.location.href = "pedidos.html";
-                } else {
-                    alert("Error al generar pedido: " + res.error);
-                }
-            })
-            .catch(err => console.error("Error en la petición:", err));
-
+        // SOLO abrir el modal — no enviar nada todavía
+        abrirModalCocina();
     });
 }
 
@@ -591,10 +554,6 @@ function limpiarPedidos() {
         .catch(err => console.error("Error al limpiar pedidos:", err));
 }
 
-
-
-
-
 function verDetallePedido(idPedido) {
 
     fetch("backend/obtener_pedidos.php")
@@ -679,6 +638,185 @@ function pedidoListo(idPedido) {
         })
         .catch(err => console.error("Error pedido listo:", err));
 }
+
+function mostrarModalSeleccion() {
+    const modal = document.getElementById("modalSeleccionCocina");
+    const lista = document.getElementById("listaSeleccionCocina");
+
+    lista.innerHTML = "";
+
+    listaMesa.forEach((item, i) => {
+        lista.innerHTML += `
+            <label style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span>${item.nombre} (x${item.cantidad})</span>
+                <input type="checkbox" data-index="${i}">
+            </label>
+        `;
+    });
+
+    modal.style.display = "flex";
+}
+
+// ===========================================
+// EVENTOS DEL MODAL DE SELECCIÓN DE PRODUCTOS
+// ===========================================
+
+const btnCancelarSeleccion = document.getElementById("btnCancelarSeleccion");
+if (btnCancelarSeleccion) {
+    btnCancelarSeleccion.addEventListener("click", () => {
+        document.getElementById("modalSeleccionCocina").style.display = "none";
+    });
+}
+
+const btnConfirmarSeleccion = document.getElementById("btnConfirmarSeleccion");
+if (btnConfirmarSeleccion) {
+    btnConfirmarSeleccion.addEventListener("click", () => {
+        const checks = document.querySelectorAll("#listaSeleccionCocina input[type='checkbox']");
+        const seleccionados = [];
+
+        checks.forEach(chk => {
+            if (chk.checked) {
+                const index = chk.getAttribute("data-index");
+                seleccionados.push(listaMesa[index]);
+            }
+        });
+
+        if (seleccionados.length === 0) {
+            alert("Debe seleccionar al menos un producto");
+            return;
+        }
+
+        generarPedido(seleccionados);
+    });
+}
+
+const btnEnviarCocina = document.getElementById("btnEnviarCocina");
+if (btnEnviarCocina) {
+    btnEnviarCocina.addEventListener("click", () => {
+        const seleccionados = [];
+
+        document.querySelectorAll(".checkProductoCocina").forEach(chk => {
+            if (chk.checked) {
+                seleccionados.push({
+                    id_producto: chk.dataset.id,
+                    cantidad: chk.dataset.cantidad,
+                    precio: chk.dataset.precio
+                });
+            }
+        });
+
+        if (seleccionados.length === 0) {
+            alert("Debe seleccionar al menos un producto");
+            return;
+        }
+
+        const payload = {
+            mesa: mesaActual,
+            items: seleccionados
+        };
+
+        fetch("backend/generar_pedido.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+            .then(r => r.json())
+            .then(res => {
+                if (res.ok) {
+                    alert("Pedido enviado a cocina correctamente");
+
+                    // Cerrar modal de cocina
+                    document.getElementById("modalCocina").style.display = "none";
+
+                    // Volver a abrir el modal de mesa
+                    document.getElementById("mesaModal").style.display = "flex";
+                }
+                if (res.ok) {
+                    alert("Pedido enviado a cocina correctamente");
+
+                    // Cerrar modal de cocina
+                    document.getElementById("modalCocina").style.display = "none";
+
+                    // Volver a abrir el modal de mesa
+                    document.getElementById("mesaModal").style.display = "flex";
+                }
+
+                else {
+                alert("Error: " + res.error);
+    }
+            });
+    });
+}
+
+
+function generarPedido(itemsSeleccionados) {
+
+    const payload = {
+        mesa: mesaActual,
+        items: itemsSeleccionados.map(p => ({
+            id_producto: p.id_producto,
+            cantidad: p.cantidad,
+            precio: p.precio
+        }))
+    };
+
+    fetch("backend/generar_pedido.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+        .then(r => r.json())
+        .then(res => {
+            if (res.ok) {
+                alert("Pedido enviado a cocina");
+
+                // Cerrar modal de cocina
+                document.getElementById("modalCocina").style.display = "none";
+
+                // Volver a mostrar el modal original de la mesa
+                document.getElementById("mesaModal").style.display = "flex";
+            }
+
+            else {
+                alert("Error al generar pedido: " + res.error);
+            }
+        })
+        .catch(err => console.error("Error:", err));
+}
+
+
+function abrirModalCocina() {
+    const modal = document.getElementById("modalCocina");
+    const contenedor = document.getElementById("listaProductosCocina");
+
+    if (!modal || !contenedor) {
+        console.warn("⚠️ Modal de cocina o contenedor NO existen en esta página");
+        return;
+    }
+
+    contenedor.innerHTML = "";
+
+    listaMesa.forEach(p => {
+        contenedor.innerHTML += `
+            <label>
+                <input type="checkbox" class="checkProductoCocina"
+                    data-id="${p.id_producto}"
+                    data-cantidad="${p.cantidad}"
+                    data-precio="${p.precio}">
+                ${p.nombre} (x${p.cantidad})
+            </label>
+        `;
+    });
+
+    modal.style.display = "flex";
+}
+
+function cerrarModalCocina() {
+    const modal = document.getElementById("modalCocina");
+    if (modal) modal.style.display = "none";
+}
+
+
 
 
 

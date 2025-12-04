@@ -1,0 +1,137 @@
+/* =============================
+   TABLA DE PEDIDOS
+   ============================= */
+
+.tabla-pedidos-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.tabla-pedidos {
+    width: 85%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Encabezado */
+.tabla-pedidos thead {
+    background: #5C4EE5;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.tabla-pedidos th,
+.tabla-pedidos td {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 15px;
+}
+
+.tabla-pedidos tbody tr {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Filas alternadas */
+.tabla-pedidos tbody tr:nth-child(even) {
+    background: #f7f5ff;
+}
+
+/* Hover */
+.tabla-pedidos tbody tr:hover {
+    background: #eceaff;
+    transition: 0.2s;
+}
+
+/* Botón ver detalle */
+.btn-detalle {
+    background: #5C4EE5;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-detalle:hover {
+    background: #4236d9;
+    transform: scale(1.03);
+}
+/* Texto en cursiva para "Sin pedidos" */
+
+.sin-pedidos {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #666;
+    font-style: italic;
+}
+
+.top-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.btn-eliminar-pedidos {
+    background: #d9534f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.btn-eliminar-pedidos:hover {
+    background: #b0413b;
+    transform: scale(1.03);
+}
+
+.acciones-pedidos {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-refresh,
+.btn-danger {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+/* Actualizar pedidos */
+.btn-refresh {
+    background-color: #4a5cff;
+    color: #fff;
+}
+
+.btn-refresh:hover {
+    background-color: #3948d9;
+}
+
+/* Limpiar pedidos */
+.btn-danger {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+
+
